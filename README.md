@@ -17,6 +17,30 @@ GLAS.T. is a local AI tool that generates structured software test cases from si
 
 This project follows the **A.N.T.** (Adapter, Nexus, Tools) architecture for reliability:
 
+```mermaid
+graph TD
+    User([👤 User]) -->|Input Description| Adapter[🖥️ Adapter (Streamlit UI)]
+    Adapter -->|Trigger| Nexus[🧠 Nexus (Logic Layer)]
+    
+    subgraph "Local Environment"
+        Nexus -->|Validates & Formats| Tool[🔧 Tool (Ollama Client)]
+        Tool -->|API Call| LLM[(🦙 Ollama / Llama 3.2)]
+    end
+    
+    LLM -->|JSON Response| Tool
+    Tool -->|Raw String| Nexus
+    Nexus -->|Parsed Objects| Adapter
+    Adapter -->|Styled Output| User
+
+    classDef adapter fill:#4CAF50,stroke:#333,stroke-width:2px,color:white;
+    classDef nexus fill:#2196F3,stroke:#333,stroke-width:2px,color:white;
+    classDef tool fill:#FF9800,stroke:#333,stroke-width:2px,color:white;
+    
+    class Adapter adapter;
+    class Nexus nexus;
+    class Tool tool;
+```
+
 - **Adapter (Layer 1):** `app.py` - The Streamlit frontend. Handles user interaction and display.
 - **Nexus (Layer 2):** `logic.py` - The reasoning engine. Validates input and structures the prompts.
 - **Tool (Layer 3):** `tools/client.py` - The execution layer. Deterministically communicates with the local Ollama instance.
